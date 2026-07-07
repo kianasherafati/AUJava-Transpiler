@@ -1,146 +1,133 @@
 grammar AUJava;
 
-//  PARSER RULES
-
+// Parser Rules 
 
 program
-    : classDeclaration+ EOF                                                    # ProgramRule
+    : classDecl* EOF                                                   #ProgramDeclar
     ;
 
-classDeclaration
-    : 'public' 'class' 'Main' '{' mainClassMember* '}'                         # MainClassDeclaration
-    | 'class' Identifier ('extends' Identifier)? '{' classMember* '}'          # NormalClassDeclaration
+classDecl
+    : (PUBLIC)? 'class' name=ID (EXTENDS parent=ID)? '{' member* '}'   #ClassDeclaration
     ;
 
-// Members allowed only inside the single "public class Main"
-mainClassMember
-    : fieldDeclaration                                                        # MainFieldMember
-    | methodDeclaration                                                        # MainMethodMember
-    | mainMethodDeclaration                                                    # MainEntryMember
+member
+    : fieldDecl                                                        #FieldMember
+    | methodDecl                                                       #MethodMember
     ;
 
-// Members allowed inside a regular (non-Main) class
-classMember
-    : fieldDeclaration                                                         # RegularFieldMember
-    | methodDeclaration                                                        # RegularMethodMember
-    ;
-
-mainMethodDeclaration
-    : 'public' 'static' 'void' 'main' '(' 'String' '[' ']' Identifier ')' block # MainEntryPointDecl
-    ;
-
-fieldDeclaration
-    : 'static'? type Identifier ';'                                           # FieldDeclRule
-    ;
-
-methodDeclaration
-    : 'static'? type Identifier '(' paramList? ')' block                      # MethodDeclRule
+fieldDecl
+    : (STATIC)? type ID ';'                                            #FieldDeclaration
     ;
 
 paramList
-    : param (',' param)*                                                      # ParamListRule
+    : (param (',' param)*)?                                            #Parameters
     ;
 
 param
-    : type Identifier                                                         # ParamRule
+    : type ID                                                          #ParamDeclaration
     ;
 
-type
-    : 'int'                                                                    # IntTypeRule
-    | 'boolean'                                                                # BooleanTypeRule
-    | 'void'                                                                   # VoidTypeRule
-    | Identifier                                                               # ClassTypeRule
+// Special-cased so we can recognize `public static void main(String[] args)`.
+// 'main' and 'String' are matched as plain ID and validated semantically
+// (their text is checked in the visitor) so they don't collide with the ID rule.
+mainMethodDecl
+    : PUBLIC STATIC VOID name=ID '(' stringType=ID '[' ']' argsName=ID ')' block   #MainMethod
+    ;
+
+methodDecl
+    : mainMethodDecl                                                   #MainMethodDeclaration
+    | (STATIC)? type ID '(' paramList ')' block                        #RegularMethodDeclaration
     ;
 
 block
-    : '{' statement* '}'                                                       # BlockRule
+    : '{' statement* '}'
     ;
 
 statement
-    : block                                                                    # NestedBlockStatement
-    | localVarDeclaration                                                      # LocalVarDeclStatement
-    | ifStatement                                                              # IfStatementRule
-    | whileStatement                                                           # WhileStatementRule
-    | 'break' ';'                                                              # BreakStatementRule
-    | 'continue' ';'                                                           # ContinueStatementRule
-    | 'return' expression? ';'                                                 # ReturnStatementRule
-    | assignment ';'                                                           # AssignStatementRule
-    | printlnCall ';'                                                          # PrintlnStatementRule
-    | expression ';'                                                           # ExpressionStatementRule
+    : block                                                            #BlockStatement
+    | localVarDecl ';'                                                 #LocalVarDeclStatement
+    | assign ';'                                                       #AssignmentStatement
+    | expr ';'                                                         #ExpressionStatement
+    | IF '(' expr ')' thenStat=statement (ELSE elseStat=statement)?     #IfStatement
+    | WHILE '(' expr ')' statement                                     #WhileStatement
+    | BREAK ';'                                                        #BreakStatement
+    | CONTINUE ';'                                                     #ContinueStatement
+    | RETURN expr? ';'                                                 #ReturnStatement
+    | 'System' '.' 'out' '.' 'println' '(' expr ')' ';'                #PrintStatement
     ;
 
-localVarDeclaration
-    : type Identifier ('=' expression)? ';'                                    # LocalVarDeclRule
+localVarDecl
+    : type ID ('=' expr)?                                              #LocalVariableDeclaration
     ;
 
-ifStatement
-    : 'if' '(' expression ')' block ('else' block)?                            # IfElseRule
+assign
+    : target=lvalue '=' expr                                           #Assignment
     ;
 
-whileStatement
-    : 'while' '(' expression ')' block                                         # WhileLoopRule
+lvalue
+    : THIS '.' ID                                                      #ThisFieldLValue
+    | receiver=expr '.' field=ID                                       #FieldLValue
+    | ID                                                                #IdLValue
     ;
 
-assignment
-    : designator '=' expression                                                # AssignmentRule
-    ;
-
-// Assignable targets: a bare name, this.field, or a chain of field accesses
-designator
-    : Identifier                                                               # SimpleDesignatorRule
-    | 'this' '.' Identifier                                                    # ThisFieldDesignatorRule
-    | designator '.' Identifier                                                # ChainedFieldDesignatorRule
-    ;
-
-printlnCall
-    : 'System' '.' 'out' '.' 'println' '(' expression ')'                      # PrintlnRule
-    ;
-
-expression
-    : primary                                                                  # PrimaryExpressionRule
-    | 'new' Identifier '(' argList? ')'                                        # NewObjectExpressionRule
-    | expression '.' Identifier '(' argList? ')'                               # MethodCallExpressionRule
-    | expression '.' Identifier                                                # FieldAccessExpressionRule
-    | '!' expression                                                           # NotExpressionRule
-    | '-' expression                                                           # UnaryMinusExpressionRule
-    | expression op=('*'|'/') expression                                       # MulDivExpressionRule
-    | expression op=('+'|'-') expression                                       # AddSubExpressionRule
-    | expression op=('<'|'<='|'>'|'>=') expression                             # RelationalExpressionRule
-    | expression op=('=='|'!=') expression                                     # EqualityExpressionRule
-    | expression '&&' expression                                               # LogicalAndExpressionRule
-    | expression '||' expression                                               # LogicalOrExpressionRule
-    ;
-
-primary
-    : Identifier                                                               # IdentifierPrimaryRule
-    | 'this'                                                                   # ThisPrimaryRule
-    | IntegerLiteral                                                           # IntLiteralPrimaryRule
-    | ('true' | 'false')                                                       # BoolLiteralPrimaryRule
-    | '(' expression ')'                                                       # ParenPrimaryRule
+type
+    : INT                                                              #IntType
+    | BOOLEAN                                                          #BooleanType
+    | VOID                                                             #VoidType
+    | ID                                                                #ClassType
     ;
 
 argList
-    : expression (',' expression)*                                            # ArgListRule
+    : (expr (',' expr)*)?                                              #Arguments
     ;
 
-// LEXER RULES
-
-IntegerLiteral
-    : [0-9]+
+expr
+    : op='!' expr                                                                  #NotExpression
+    | leftSide=expr op=('*' | '/' | '%') rightSide=expr                            #MulDivModExpression
+    | leftSide=expr op=('+' | '-') rightSide=expr                                  #AddSubExpression
+    | leftSide=expr op=('<' | '<=' | '>' | '>=') rightSide=expr                    #RelationalExpression
+    | leftSide=expr op=('==' | '!=') rightSide=expr                                #EqualityExpression
+    | leftSide=expr op='&&' rightSide=expr                                         #AndExpression
+    | leftSide=expr op='||' rightSide=expr                                         #OrExpression
+    | receiver=expr '.' method=ID '(' argList ')'                                  #MethodCallExpression
+    | receiver=expr '.' field=ID
+    #FieldAccessExpression
+    | NEW ID '(' ')'                                                               #NewObjectExpression
+    | ID '(' argList ')'                                                           #UnqualifiedCallExpression
+    | THIS                                                                          #ThisExpression
+    | atom                                                                          #AtomExpression
     ;
 
-Identifier
-    : [a-zA-Z_][a-zA-Z_0-9]*
+atom
+    : INTEGER                                                          #IntegerAtom
+    | TRUE                                                             #TrueAtom
+    | FALSE                                                            #FalseAtom
+    | ID                                                                #IDAtom
+    | '(' expr ')'                                                     #ParentAtom
     ;
 
-WS
-    : [ \t\r\n]+ -> skip
-    ;
+// Lexer Rules
 
-LINE_COMMENT
-    : '//' ~[\r\n]* -> skip
-    ;
+IF        : 'if';
+ELSE      : 'else';
+WHILE     : 'while';
+BREAK     : 'break';
+CONTINUE  : 'continue';
+RETURN    : 'return';
+NEW       : 'new';
+THIS      : 'this';
+EXTENDS   : 'extends';
+STATIC    : 'static';
+PUBLIC    : 'public';
+VOID      : 'void';
+INT       : 'int';
+BOOLEAN   : 'boolean';
+TRUE      : 'true';
+FALSE     : 'false';
 
-BLOCK_COMMENT
-    : '/*' .*? '*/' -> skip
-    ;
+ID : [a-zA-Z_][a-zA-Z0-9_]* ;
+INTEGER : [0-9]+ ;
+
+LINE_COMMENT  : '//' ~[\r\n]* -> skip;
+BLOCK_COMMENT : '/*' .*? '*/' -> skip;
+WS : [ \t\r\n]+ -> skip;
