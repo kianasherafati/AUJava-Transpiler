@@ -1,0 +1,1 @@
+Cyclic inheritance detected: A extends B, B extends C, C extends A forms a cycle in the extends graph.

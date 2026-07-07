@@ -1,0 +1,1 @@
+Illegal static method override: subclass 'B' declares static 'test(int)' with the same name and arity as ancestor 'A', which is forbidden for static methods.

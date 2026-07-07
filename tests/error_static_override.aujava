@@ -1,0 +1,16 @@
+class A {
+    static int test(int a) {
+        return a;
+    }
+}
+
+class B extends A {
+    static int test(int a) {
+        return a + 1;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+    }
+}
