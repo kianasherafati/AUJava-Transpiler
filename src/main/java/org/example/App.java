@@ -88,6 +88,22 @@ public class App
         memberCollector.resolveInheritance();
         memberCollector.visit(parseTree);
         memberCollector.checkStaticOverrides();
+
+        // Enforce constraint: The class containing the main method must not contain
+        // any other fields or methods (regular or static).
+        String mainOwner = classCollector.getMainOwnerClassName();
+        ClassInfo mainClass = classTable.getClass(mainOwner);
+        if (mainClass != null) {
+            boolean hasOtherFields = !mainClass.getOwnFields().isEmpty();
+            boolean hasOtherMethods = !mainClass.getOwnMethods().isEmpty();
+            boolean hasOtherStaticFields = !mainClass.getOwnStaticFields().isEmpty();
+            boolean hasOtherStaticMethods = !mainClass.getOwnStaticMethods().isEmpty();
+
+            if (hasOtherFields || hasOtherMethods || hasOtherStaticFields || hasOtherStaticMethods) {
+                errorHandler.error("The class containing the main method ('" + mainOwner + "') cannot contain any other fields or methods.");
+            }
+        }
+
         if (errorHandler.hasErrors()) {
             System.exit(-1);
         }
