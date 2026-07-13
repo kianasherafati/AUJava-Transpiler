@@ -1,5 +1,14 @@
-.idea/
+### Compiled Object files (Maven & Java outputs) ###
 *.class
 *.exe
 out/
 target/
+
+### IntelliJ IDEA Personal Settings ###
+.idea/
+*.iml
+*.iws
+*.ipr
+
+### Windows OS specific ###
+Thumbs.db

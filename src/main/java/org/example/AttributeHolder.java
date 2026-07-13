@@ -3,7 +3,7 @@ package org.example;
 public class AttributeHolder {
     private String code = "";
     private String address = "";
-    private String radLangType = "";
+    private String auJavaType = "";
     private String cType = "";
 
     public String getCode() {
@@ -26,12 +26,12 @@ public class AttributeHolder {
         this.cType = cType;
     }
 
-    public String getRadLangType() {
-        return radLangType;
+    public String getAUJavaType() {
+        return auJavaType;
     }
 
-    public void setRadLangType(String radLangType) {
-        this.radLangType = radLangType;
+    public void setAUJavaType(String auJavaType) {
+        this.auJavaType = auJavaType;
     }
 
     public String getAddress() {
