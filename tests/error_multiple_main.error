@@ -1,0 +1,1 @@
+Multiple entry points found: both 'Other' and 'Main' declare 'public static void main(String[] args)', but exactly one is allowed.

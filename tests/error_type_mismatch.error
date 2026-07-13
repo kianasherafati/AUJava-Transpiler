@@ -1,0 +1,1 @@
+Type mismatch: cannot assign a boolean value (true) to variable 'i' declared as int.

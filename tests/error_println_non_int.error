@@ -1,0 +1,1 @@
+System.out.println argument type error: the argument must be of type int, but a boolean expression was given.

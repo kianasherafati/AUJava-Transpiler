@@ -1,0 +1,32 @@
+class A {
+    static int counter;
+
+    static int getCounter() {
+        return counter;
+    }
+
+    static void increment() {
+        counter = counter + 1;
+    }
+}
+
+class B extends A {
+    // B does NOT override increment/getCounter (that would be illegal for
+    // static methods); it only adds a brand new static method.
+    static int bonus() {
+        return 100;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        A.counter = 5;
+        A.increment();
+        A.increment();
+        int c = A.getCounter();
+        System.out.println(c);
+
+        int b = B.bonus();
+        System.out.println(b);
+    }
+}

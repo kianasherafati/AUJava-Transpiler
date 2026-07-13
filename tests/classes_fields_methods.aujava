@@ -1,0 +1,16 @@
+class A {
+    int a;
+
+    int test(int d) {
+        return a * d;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        A obj = new A();
+        obj.a = 5;
+        int result = obj.test(3);
+        System.out.println(result);
+    }
+}

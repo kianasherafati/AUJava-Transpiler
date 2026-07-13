@@ -1,0 +1,1 @@
+'continue' used outside of any loop: the enclosing method body has no while loop scope for it to act on.

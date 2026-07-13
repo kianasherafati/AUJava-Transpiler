@@ -1,0 +1,1 @@
+Method arity mismatch: 'test' is declared with 1 parameter but the call site passes 2 arguments.

@@ -1,0 +1,17 @@
+// comments.aujava - proves that comments do not affect program behavior.
+/* This is a
+   multi-line comment sitting between top-level declarations. */
+
+public class Main {
+    // main entry point
+    public static void main(String[] args) {
+        /* declare x using a nested-precedence expression */
+        int x = 1 + 2 * 3 - 4 / 2; // inline comment after a statement
+
+        /*
+         * another multi-line comment
+         * spanning several lines
+         */
+        System.out.println(x); // should print 5, comments must be ignored
+    }
+}

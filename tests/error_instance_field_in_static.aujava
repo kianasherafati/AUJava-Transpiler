@@ -1,0 +1,11 @@
+public class Main {
+    public static void main(String[] args) {
+    }
+}
+
+public class Counter {
+    int count;
+    public static void increment() {
+        count = count + 1;
+    }
+}

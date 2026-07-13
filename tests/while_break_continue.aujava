@@ -1,0 +1,36 @@
+public class Main {
+    public static void main(String[] args) {
+        // Sum 1..10, skipping even numbers, stopping once the running sum
+        // exceeds 15.
+        int i = 0;
+        int sum = 0;
+        while (i < 10) {
+            i = i + 1;
+            if (i % 2 == 0) {
+                continue;
+            }
+            sum = sum + i;
+            if (sum > 15) {
+                break;
+            }
+        }
+        System.out.println(sum);
+
+        // Nested loops: break/continue in the inner loop must only affect
+        // the innermost loop, not the outer one.
+        int outer = 0;
+        int total = 0;
+        while (outer < 3) {
+            int inner = 0;
+            while (inner < 5) {
+                inner = inner + 1;
+                if (inner == 3) {
+                    break;
+                }
+                total = total + 1;
+            }
+            outer = outer + 1;
+        }
+        System.out.println(total);
+    }
+}

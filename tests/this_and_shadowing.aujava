@@ -1,0 +1,17 @@
+class A {
+    int i;
+
+    void test() {
+        i = 100;          // sets the instance field i
+        int i = 200;       // local variable shadows the field
+        System.out.println(i);       // prints 200 (local)
+        System.out.println(this.i);  // prints 100 (field)
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        A obj = new A();
+        obj.test();
+    }
+}

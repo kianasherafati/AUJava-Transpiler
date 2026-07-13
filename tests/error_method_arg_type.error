@@ -1,0 +1,1 @@
+Argument type mismatch: parameter 'a' of 'test' expects int but the caller passed a boolean value.

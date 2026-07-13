@@ -1,0 +1,39 @@
+class Student {
+    Teacher supervisor;
+
+    int getSupervisorId() {
+        return supervisor.getId();
+    }
+}
+
+class Helper {
+    int foo(int n) {
+        return bar(n);
+    }
+
+    int bar(int m) {
+        return m + 1;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student();
+        s.supervisor = new Teacher();
+        s.supervisor.id = 42;
+        int x = s.getSupervisorId();
+        System.out.println(x);
+
+        Helper h = new Helper();
+        int y = h.foo(10);
+        System.out.println(y);
+    }
+}
+
+class Teacher {
+    int id;
+
+    int getId() {
+        return id;
+    }
+}

@@ -1,0 +1,11 @@
+class A {
+    void test(int a) {
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        A a = new A();
+        a.test(true);
+    }
+}
