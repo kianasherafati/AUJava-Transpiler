@@ -1,0 +1,89 @@
+// ==========================================
+// AUJava Comprehensive Demo Test
+// Testing: Inheritance, Static, Loops, Math
+// ==========================================
+
+class Animal {
+    int age;
+
+    void setAge(int a) {
+        this.age = a;
+    }
+
+    int getVoice() {
+        return 0;
+    }
+}
+
+class Dog extends Animal {
+    int getVoice() {
+        return 111;
+    }
+}
+
+class Cat extends Animal {
+    int getVoice() {
+        return 222;
+    }
+}
+
+class MathHelper {
+    static int counter;
+
+    static void initCounter(int start) {
+        counter = start;
+    }
+
+    static int computeFactorial(int n) {
+        int result = 1;
+        int i = 1;
+        while (i < n + 1) {
+            result = result * i;
+            i = i + 1;
+        }
+        return result;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Animal a1 = new Dog();
+        a1.setAge(3);
+        Animal a2 = new Cat();
+        a2.setAge(5);
+
+        System.out.println(a1.getVoice());
+        System.out.println(a2.getVoice());
+
+        MathHelper.initCounter(10);
+        System.out.println(MathHelper.counter);
+
+        int i = 0;
+        int sum = 0;
+
+        while (i < 10) {
+            i = i + 1;
+
+            if (i == 5) {
+                continue;
+            }
+            if (i == 8) {
+                break;
+            }
+
+            boolean isEven = ((i / 2) * 2 == i);
+            boolean check = isEven && true;
+
+            if (check) {
+                sum = sum + i;
+            } else {
+                sum = sum - 1;
+            }
+        }
+
+        System.out.println(sum);
+        int fact = MathHelper.computeFactorial(4);
+        System.out.println(fact);
+    }
+}
