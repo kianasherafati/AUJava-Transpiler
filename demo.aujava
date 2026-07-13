@@ -87,3 +87,11 @@ public class Main {
         System.out.println(fact);
     }
 }
+
+/* expected results
+111
+222
+10
+9
+24
+*/
