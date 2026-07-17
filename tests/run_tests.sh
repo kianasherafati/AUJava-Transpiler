@@ -123,6 +123,9 @@ done
 echo "================================================================"
 echo "Summary: $PASS/$TOTAL passed"
 
+
+read -p "Press [Enter] key to exit..."
+
 if [ "$FAIL" -gt 0 ]; then
     exit 1
 fi
